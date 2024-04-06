@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Mar 29 20:02:07 2024
+Created on Sat Mar 16 01:02:07 2024
 
-@author: Amaldev
+@author: ASUS
 """
 from pynput.keyboard import Key, Listener,Controller
 import yaml
@@ -21,6 +21,7 @@ with open('macros.yaml', 'r') as stream:
 res = max(dic.keys(), key = len)
 maxLen = len(res)
 keyboard = Controller()
+alive=True
 
 def compareMacro():
     global buffer,dic
@@ -41,21 +42,25 @@ def on_press(key):
     global buffer
     try:
         #print('alphanumeric key {0} pressed'.format(key.char))
-        if(len(buffer)==maxLen):
+        if(len(buffer)==maxLen and key.char!=None):
             buffer= buffer[1:]+key.char
-        else:
+        elif key.char!=None:
             buffer=buffer+key.char
     except AttributeError:
         buffer=buffer
 
 def on_release(key):
     #print('{0} released'.format(key))
+    global alive
     if key == Key.esc:
+        alive=False
         return False
-    elif key == Key.tab:
+    elif key == Key.ctrl_l:
         compareMacro()
     
     
 listener = Listener(on_press=on_press, on_release=on_release)
 listener.start()
+while alive:
+    i=0
     
